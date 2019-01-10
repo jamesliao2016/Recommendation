@@ -1,0 +1,26 @@
+{
+  "eta": [
+    0.3
+  ],
+  "lambda": [
+    1
+  ],
+  "alpha": [
+    0
+  ],
+  "min_child_weight": [
+    1
+  ],
+  "max_depth": [
+    8
+  ],
+  "colsample_bytree": [
+    0.8
+  ],
+  "num_round": [
+    200
+  ],
+  "num_workers": [
+    256
+  ]
+}
