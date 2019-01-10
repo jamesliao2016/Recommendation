@@ -1,0 +1,184 @@
+{
+  "ratio_feature": [
+    {
+      "numerators": ["pv_1_3"],
+      "denominators": ["pv_usr_1_3"]
+    },
+    {
+      "numerators": ["pv_4_7"],
+      "denominators": ["pv_usr_4_7"]
+    },
+    {
+      "numerators": ["pv_8_15"],
+      "denominators": ["pv_usr_8_15"]
+    },
+    {
+      "numerators": ["cart_1_7"],
+      "denominators": ["cart_usr_1_7"]
+    },
+    {
+      "numerators": ["follow_1_7"],
+      "denominators": ["follow_usr_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["valid_sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["b_pv_1_3"],
+      "denominators": ["pv_usr_1_3"]
+    },
+    {
+      "numerators": ["b_pv_4_7"],
+      "denominators": ["pv_usr_4_7"]
+    },
+    {
+      "numerators": ["b_pv_8_15"],
+      "denominators": ["pv_usr_8_15"]
+    },
+    {
+      "numerators": ["b_cart_1_7"],
+      "denominators": ["cart_usr_1_7"]
+    },
+    {
+      "numerators": ["b_follow_1_7"],
+      "denominators": ["follow_usr_1_7"]
+    },
+    {
+      "numerators": ["b_sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["b_valid_sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["c_pv_1_3"],
+      "denominators": ["pv_usr_1_3"]
+    },
+    {
+      "numerators": ["c_pv_4_7"],
+      "denominators": ["pv_usr_4_7"]
+    },
+    {
+      "numerators": ["c_pv_8_15"],
+      "denominators": ["pv_usr_8_15"]
+    },
+    {
+      "numerators": ["c_cart_1_7"],
+      "denominators": ["cart_usr_1_7"]
+    },
+    {
+      "numerators": ["c_follow_1_7"],
+      "denominators": ["follow_usr_1_7"]
+    },
+    {
+      "numerators": ["c_sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["c_valid_sale_qtty_1_7"],
+      "denominators": ["sale_qtty_usr_1_7"]
+    },
+    {
+      "numerators": ["pv_usr_1_3"],
+      "denominators": ["attr_pv_1_3"]
+    },
+    {
+      "numerators": ["pv_usr_4_7"],
+      "denominators": ["attr_pv_4_7"]
+    },
+    {
+      "numerators": ["pv_usr_8_15"],
+      "denominators": ["attr_pv_8_15"]
+    },
+    {
+      "numerators": ["cart_usr_1_7"],
+      "denominators": ["attr_cart_1_7"]
+    },
+    {
+      "numerators": ["follow_usr_1_7"],
+      "denominators": ["attr_follow_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_valid_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["pv_usr_1_3"],
+      "denominators": ["attr_b_pv_1_3"]
+    },
+    {
+      "numerators": ["pv_usr_4_7"],
+      "denominators": ["attr_b_pv_4_7"]
+    },
+    {
+      "numerators": ["pv_usr_8_15"],
+      "denominators": ["attr_b_pv_8_15"]
+    },
+    {
+      "numerators": ["cart_usr_1_7"],
+      "denominators": ["attr_b_cart_1_7"]
+    },
+    {
+      "numerators": ["follow_usr_1_7"],
+      "denominators": ["attr_b_follow_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_b_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_b_valid_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["pv_usr_1_3"],
+      "denominators": ["attr_c_pv_1_3"]
+    },
+    {
+      "numerators": ["pv_usr_4_7"],
+      "denominators": ["attr_c_pv_4_7"]
+    },
+    {
+      "numerators": ["pv_usr_8_15"],
+      "denominators": ["attr_c_pv_8_15"]
+    },
+    {
+      "numerators": ["cart_usr_1_7"],
+      "denominators": ["attr_c_cart_1_7"]
+    },
+    {
+      "numerators": ["follow_usr_1_7"],
+      "denominators": ["attr_c_follow_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_c_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["sale_qtty_usr_1_7"],
+      "denominators": ["attr_c_valid_sale_qtty_1_7"]
+    },
+    {
+      "numerators": ["search_usr_1_3"],
+      "denominators": ["c_search_1_3"]
+    },
+    {
+      "numerators": ["search_usr_4_7"],
+      "denominators": ["c_search_4_7"]
+    },
+    {
+      "numerators": ["search_usr_8_15"],
+      "denominators": ["c_search_8_15"]
+    }
+  ]
+}
