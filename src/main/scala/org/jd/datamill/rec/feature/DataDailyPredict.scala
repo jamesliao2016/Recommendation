@@ -161,33 +161,33 @@ object DataDailyPredict {
       .drop("item_second_cate_cd")
 
     //5.user attr
-    val userAttrSql = sqlUserAttr(treeFeature)
-    val users = spark.sql(s"select user_log_acct, ${userAttrSql} " +
-      s" from ${Utils.tableUser} where dt='${dtUser}' " +
-      s"and user_log_acct is not null and user_log_acct !='' and user_log_acct !='_' and user_log_acct !='-' " +
-      s"and user_log_acct !='nobody' and user_log_acct !='NULL' ")
-      .drop("dt")
-      .join(sample.select("user_log_acct").dropDuplicates(),Array("user_log_acct"))
-    users.persist(StorageLevel.MEMORY_AND_DISK)
-    println(s"dataJoin : users.count  ${users.count()}")
+//    val userAttrSql = sqlUserAttr(treeFeature)
+//    val users = spark.sql(s"select user_log_acct, ${userAttrSql} " +
+//      s" from ${Utils.tableUser} where dt='${dtUser}' " +
+//      s"and user_log_acct is not null and user_log_acct !='' and user_log_acct !='_' and user_log_acct !='-' " +
+//      s"and user_log_acct !='nobody' and user_log_acct !='NULL' ")
+//      .drop("dt")
+//      .join(sample.select("user_log_acct").dropDuplicates(),Array("user_log_acct"))
+//    users.persist(StorageLevel.MEMORY_AND_DISK)
+//    println(s"dataJoin : users.count  ${users.count()}")
 
     val mergedMid = sample
       .join(broadcast(item),Array("item_third_cate_cd","main_brand_code"),"left_outer")
       .join(actUBC,Array("user_log_acct","item_third_cate_cd","main_brand_code"),"left_outer")
       .join(actUB,Array("user_log_acct","main_brand_code"),"left_outer")
       .join(actUC,Array("user_log_acct","item_third_cate_cd"),"left_outer")
-    mergedMid.persist(StorageLevel.MEMORY_AND_DISK)
-    println(s" data join mergedMid.count : ${mergedMid.count()}")
+    //mergedMid.persist(StorageLevel.MEMORY_AND_DISK)
+    //println(s" data join mergedMid.count : ${mergedMid.count()}")
 
-    val merged = mergedMid
-      .join(users,Array("user_log_acct"),"left_outer")
-      .drop("item_second_cate_cd")
+//    val merged = mergedMid
+//      .join(users,Array("user_log_acct"),"left_outer")
+//      .drop("item_second_cate_cd")
 
-    merged.write.mode("overwrite").parquet(pathDataDaily)
+    mergedMid.write.mode("overwrite").parquet(pathDataDaily)
     println("data join done")
 
     mergedMid.unpersist()
-    users.unpersist()
+    //users.unpersist()
 
     taskResArr.toArray
   }

@@ -1,5 +1,5 @@
 {
-  "wd": "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/",
+  "wd": "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/",
   "ratio_feature": [
     {
       "numerators": ["sale_qtty_1_7"],

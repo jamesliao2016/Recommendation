@@ -16,19 +16,47 @@ object DataDaily {
     //valid : pos=all; neg <=0.5
     val sample = spark.sql(
       s"select * from ${Utils.tableSampleActAll} " +
-        s"where dt='${dt}' and sample_type='1' " +
+        s"where dt='${dt}' and sample_type in ('1','1_2','1_3','1_4','1_5') " +
         s"and user_log_acct is not null and user_log_acct!='' and user_log_acct!='-' and user_log_acct!='nobody' " +
         s"and main_brand_code is not null and item_third_cate_cd is not null " +
         s" " +
         s"union all " +
         s"select * from ${Utils.tableSampleActAll} " +
-        s"where dt='${dt}' and sample_type!='1' " +
+        s"where dt='${dt}' and sample_type in ('2','3','4','5') " +
         s"and user_log_acct is not null and user_log_acct!='' and user_log_acct!='-' and user_log_acct!='nobody' " +
         s"and main_brand_code is not null and item_third_cate_cd is not null " +
-        s"and rand() <= 0.05 " +
+        s"and rand() <= 0.2 " +
         s"")
       //.drop("sample_type")
       .drop("dt")
+
+//    val sample = spark.sql(
+//      s"select * from ${Utils.tableSampleActAll} " +
+//        s"where dt='${dt}' and sample_type in ('1','1_2','1_3','1_4','1_5') " +
+//        s"and user_log_acct is not null and user_log_acct!='' and user_log_acct!='-' and user_log_acct!='nobody' " +
+//        s"and main_brand_code is not null and item_third_cate_cd is not null " +
+//        "and (" +
+//        "(main_brand_code='8557' and item_third_cate_cd='655') or " +
+//        "(main_brand_code='8740' and item_third_cate_cd='672') or " +
+//        "(main_brand_code='19306' and item_third_cate_cd='12201') or " +
+//        "(main_brand_code='3659' and item_third_cate_cd='870') or " +
+//        "(main_brand_code='7820' and item_third_cate_cd='16756') " +
+//        ")"+
+//        s" " +
+//        s"union all " +
+//        s"select * from ${Utils.tableSampleActAll} " +
+//        s"where dt='${dt}' and sample_type in ('2','3','4','5') " +
+//        s"and user_log_acct is not null and user_log_acct!='' and user_log_acct!='-' and user_log_acct!='nobody' " +
+//        s"and main_brand_code is not null and item_third_cate_cd is not null " +
+//        "and (" +
+//        "(main_brand_code='8557' and item_third_cate_cd='655') or " +
+//        "(main_brand_code='8740' and item_third_cate_cd='672') or " +
+//        "(main_brand_code='19306' and item_third_cate_cd='12201') or " +
+//        "(main_brand_code='3659' and item_third_cate_cd='870') or " +
+//        "(main_brand_code='7820' and item_third_cate_cd='16756') " +
+//        ")")
+//      //.drop("sample_type")
+//      .drop("dt")
 
     sample
   }
@@ -53,8 +81,8 @@ object DataDaily {
       .drop("item_second_cate_cd")
       .drop("dt")
 
-    val userAttr = spark.sql(s"select * from ${Utils.tableUsersJoinedSamp} where dt='${dtUser}'")
-      .drop("dt")
+    //val userAttr = spark.sql(s"select * from ${Utils.tableUsersJoinedSamp} where dt='${dtUser}'")
+      //.drop("dt")
 
     //val userCatboost = spark.sql(s"select * from ${Utils.tableTrainUserCatBoostCollected} where dt='${dtUser}'")
     //  .drop("dt")
@@ -66,9 +94,9 @@ object DataDaily {
     val data = sampleActAll
       .join(item,colsJoinItem,"left_outer")
     //  .join(userCatboost,colsJoinUser,"left_outer")
-      .join(userAttr,colsJoinUser,"left_outer")
+     // .join(userAttr,colsJoinUser,"left_outer")
 
-    data.repartition(64).write.mode("overwrite").parquet(pathDataDaily)
+    data.write.mode("overwrite").parquet(pathDataDaily)
 
     println(s"date  dtCandidate: ${dtCandidate}    data.count :  ${data.count()}")
 

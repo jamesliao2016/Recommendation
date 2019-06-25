@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode
 import org.apache.spark.ml.feature.VectorAssembler
 import org.apache.spark.sql.SparkSession
 import org.jd.datamill.rec.Utils
-import org.jd.datamill.rec.feature.{DataDailyPredict, FeatureEngineer, FeatureEngineerCatboost}
+import org.jd.datamill.rec.feature.{DataDailyPredict, FeatureEngineer, FeatureEngineerCatboost, FeatureEngineerNoUserAttr}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -27,11 +27,12 @@ import scala.collection.mutable.ArrayBuffer
 --conf spark.storage.memoryFraction=0.2 \
 --conf spark.shuffle.memoryFraction=0.8 \
 --conf spark.network.timeout=1200s \
+  --queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
 jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/prjson \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/predictConf.json \
 2018-12-31 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/feature_catboost_predict_20181231_testversion \
-> logs/userScoreModel_feature_predict_catboost_20181231_testversion.log 2>&1 &
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/feature_no_user_predict_20181231 \
+> logs/userScoreModel_feature_predict_no_user_20181231.log 2>&1 &
 
 --queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
 结果：
@@ -78,7 +79,7 @@ object FeatureGeneratorPredict {
     val orgPredictDf = spark.read.parquet(pathDataDaily)
       .na.fill(0).na.fill("0")
 
-    val transDF = FeatureEngineerCatboost.generateFeatures(spark, orgPredictDf, treeFeature, "predict")
+    val transDF = FeatureEngineerNoUserAttr.generateFeatures(spark, orgPredictDf, treeFeature, "predict")
       .na.fill(0).na.fill("0")
 
     val allCol = transDF.columns

@@ -17,40 +17,31 @@ import scala.collection.mutable.ArrayBuffer
 
   nohup spark-submit --class org.jd.datamill.rec.train.FeatureGeneratorTrain \
 --master yarn --deploy-mode client \
---executor-memory 16G \
---num-executors 256 \
+--executor-memory 8G \
+--num-executors 500 \
 --executor-cores 4 \
---driver-memory 8G \
+--driver-memory 4G \
   --conf spark.dynamicAllocation.enabled=false \
 --conf spark.memory.useLegacyMode=true \
---conf spark.sql.shuffle.partitions=8000 \
---conf spark.default.parallelism=8000 \
+--conf spark.sql.shuffle.partitions=4096 \
+--conf spark.default.parallelism=4096 \
 --conf spark.shuffle.memoryFraction=0.2 \
   --conf spark.shuffle.memoryFraction=0.8 \
 --conf spark.network.timeout=1200s \
   --conf spark.sql.codegen.wholeStage=false \
+  --queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
 jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
-2018-12-26 7 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_20181226_3dt_no_user_attr_ratio \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181226_3dt_no_user_attr_ratio \
+2018-12-29 12 \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_train_20181229_4dt \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_test_20181229_4dt \
 no \
-> logs/userScoreModel_feature_train_20190109_26_3dt_no_user_attr_ratio.log 2>&1 &
+"('1','1_2','1_3','1_4','1_5','2','3','4','5')" \
+> logs/userScoreModel_feature_train_20181229_4dt.log 2>&1 &
 
-以下是未来某天(30号)的数据，用于test效果：pos:0.4亿，neg:3.4亿，1:8.5
-注意：实际是catboost :
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_20181230_1dt \
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181230_1dt \
 
-无catboost
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_catboost_20181230_1dt \
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_catboost_20181230_1dt \
-
-no user
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_20181230_1dt_no_user_attr \
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181230_1dt_no_user_attr \
-no user even ratio
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_20181230_1dt_no_user_attr_ratio \
-  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181230_1dt_no_user_attr_ratio \
+no user all sample_type
+  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_train_20190107_1dt_all_type \
+  hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_test_20190107_1dt_all_type \
 
   --queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
   */
@@ -78,8 +69,9 @@ object FeatureGeneratorTrain {
     val trainPath = args(2)
     val testPath = args(3)
     val flagDaily = args(4)
+    val sampleTypes = args(5).stripSuffix("\"").stripPrefix("\"")
 
-    generate(spark, endDate, dateDiff, tree, trainPath,testPath,flagDaily)
+    generate(spark, endDate, dateDiff, tree, trainPath,testPath,flagDaily,sampleTypes)
 
   }
 
@@ -87,7 +79,8 @@ object FeatureGeneratorTrain {
                endDate: String, dateDiff: Int,
                tree: JsonNode,
                trainDFPath: String,testDFPath: String,
-               flagDaily:String): Unit = {
+               flagDaily:String,
+               sampleTypes:String): Unit = {
 
     val trainDateArr = Utils.getTrainDateArr(endDate, dateDiff, 3)
 
@@ -103,9 +96,11 @@ object FeatureGeneratorTrain {
       fileNameDailyArr.append(pathDataDaily)
     }
 
-    val orgTrainDf = spark.read.parquet(fileNameDailyArr.toArray:_*)
+    val orgTrainDf = spark.read.parquet(fileNameDailyArr.toArray:_*)//.repartition(2048)
+      .filter(s"sample_type in ${sampleTypes}")
+      .randomSplit(Array(0.3,0.7),12345)(0)
       //distinct data because of sample_type
-      .drop("sample_type").distinct()
+      .distinct()
       .na.fill(0).na.fill("0")
 
     orgTrainDf.groupBy("y_value").count().show()
@@ -132,7 +127,7 @@ object FeatureGeneratorTrain {
       .setOutputCol("features")
 
     val outputAssemble = assembler.transform(transDF)
-      .select("y_value", "user_log_acct", "main_brand_code", "item_third_cate_cd", "features")
+      .select("sample_type","y_value", "user_log_acct", "main_brand_code", "item_third_cate_cd", "features")
       .withColumnRenamed("y_value", "label")
     outputAssemble.persist(StorageLevel.MEMORY_AND_DISK)
 

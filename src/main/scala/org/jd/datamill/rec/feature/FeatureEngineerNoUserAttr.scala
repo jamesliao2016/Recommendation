@@ -28,6 +28,7 @@ object FeatureEngineerNoUserAttr {
       colsAll.append(col("user_log_acct"))
       colsAll.append(col("main_brand_code"))
       colsAll.append(col("item_third_cate_cd"))
+      colsAll.append(col("sample_type"))
     } else if (jobType == "predict") {
       colsAll.append(col("user_log_acct"))
       colsAll.append(col("main_brand_code"))

@@ -23,12 +23,13 @@ import org.jd.datamill.rec.Utils
 --conf spark.network.timeout=1200s \
 --conf spark.sql.shuffle.partitions=2048 \
 --conf spark.sql.broadcastTimeout=1200 \
+  --queue root.bdp_jmart_ad.jd_ad_dev \
 --jars /home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-spark-0.72.jar,/home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-0.72.jar \
 jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181226_3dt_no_user_attr_1_5 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/xgb_model_no_user_1_5/bestmodel_depth8_tree200 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/xgb_model_no_user_1_5/importance_no_user_1_5 \
-> logs/contribAnalysis_no_user_20190108_1_5.log 2>&1 &
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_train_20190107_1dt_no_user_sample3_all \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/xgb_model_no_user_sample2_1_2/bestmodel_depth8_tree200 \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/xgb_model_no_user_sample2_1_2/importance_no_user_ratio_sample2_1_2 \
+> logs/contribAnalysis_no_user_ratio_sample2_20190112_1_2.log 2>&1 &
 
   spark.scheduler.listenerbus.eventqueue.size 100000
   */

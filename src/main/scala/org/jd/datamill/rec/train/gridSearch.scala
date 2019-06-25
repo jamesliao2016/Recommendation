@@ -42,11 +42,11 @@ import org.apache.spark.storage.StorageLevel
 --queue root.bdp_jmart_ad.jd_ad_dev \
 --jars /home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-spark-0.72.jar,/home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-0.72.jar \
 jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_train_20181226_3dt_no_user_attr_ratio_1_5 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181226_3dt_no_user_attr_ratio_1_5 \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/xgb_model_no_user_ratio_1_5/ \
-hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/xgb_model_no_user_ratio_1_5/bestmodel_depth8_tree200 \
-> logs/rec_gridSearch_no_user_ratio_p1_n5.log 2>&1 &
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_train_20181229_4dt_reduced \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_test_20181229_4dt \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/xgb_model_all_reduced/ \
+hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/xgb_model_all_reduced/bestmodel_depth8_tree200 \
+> logs/rec_gridSearch_all_reduced_20190220.log 2>&1 &
 
   --conf spark.task.cpus=4 \
 
@@ -247,6 +247,8 @@ object gridSearch {
     //x_train1.show(30)
 
     val x_train = spark.read.parquet(trainPath)
+      .drop("sample_type")
+      .distinct()
       //.randomSplit(Array(0.7, 0.3), seed = 1673419217)(0)
       //.repartition(1024)
       .coalesce(numCoalesce)

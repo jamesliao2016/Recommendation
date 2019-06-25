@@ -23,13 +23,14 @@ import org.jd.datamill.rec.Utils
 --conf spark.storage.memoryFraction=0.2 \
 --conf spark.shuffle.memoryFraction=0.8 \
 --conf spark.network.timeout=1200s \
---queue root.bdp_jmart_ad.jd_ad_dev \
-  --jars /home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-spark-0.72.jar,/home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-0.72.jar \
-jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
+--queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
+  jars/UserScoreModelForBrandCate-1.0-SNAPSHOT.jar \
 hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/predictConf.json \
-> logs/userScoreModel_predict_all_catboost_20190109_2.log 2>&1 &
+> logs/userScoreModel_predict_no_user_20190109_2.log 2>&1 &
 
+  --jars /home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-spark-0.72.jar,/home/ads_polaris/zhangwenxiang6/tools/jars_xgb_072/xgboost4j-0.72.jar \
 
+root.bdp_jmart_ad.jd_ad_dev
 --queue bdp_jmart_ad.bdp_jmart_ad_docker2 \
 结果：
   hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/feature_predict_20181231

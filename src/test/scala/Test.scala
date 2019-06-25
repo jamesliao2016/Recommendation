@@ -1,5 +1,6 @@
-import org.apache.spark.sql.SparkSession
+import org.apache.spark.sql.{DataFrame, SparkSession}
 import org.apache.spark.storage.StorageLevel
+
 
 /**
   nohup spark-submit --class org.jd.datamill.rec.train.FeatureGeneratorTrain \
@@ -35,18 +36,65 @@ object Test {
 
     import org.apache.spark.sql.functions._
 
-    val path = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v1/data_test_20181226_3dt_no_user_attr_ratio"
-    val df = spark.read.parquet(path)
+    val path = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/user_score_model/wd_v2/data_train_20181229_4dt_sample2_1_2_distinct"
+    val df = spark.read.parquet(path).filter("label<=1")
     val pos = df.filter("label>0")
     val neg = df.filter("label<=0")
 
-    val posReduced = pos.randomSplit(Array(0.35,0.65),12345)(0)
+    val posReduced = pos.randomSplit(Array(0.2,0.8),12345)(0)
+    //val negReduced = neg.randomSplit(Array(0.4,0.6),12345)(1)
 
     val res = posReduced.union(neg)
 
     res.groupBy("label").count.show()
 
-    res.write.parquet(path+"_1_5")
+    res.write.parquet(path+"_1_10")
+
+  }
+  def getRandom (dataset : DataFrame, n : Int) = {
+    val count = dataset.count()
+    val howManyTake = if (count > n) n else count
+    dataset.sample(false,1.0*howManyTake/count).limit(n).toDF("user_log_acct")
+  }
+  def getRandomExpensive(dataset:DataFrame,n:Int): DataFrame ={
+    import org.apache.spark.sql.functions.rand
+    dataset.orderBy(rand()).limit(n)
+  }
+  def tmp(spark:SparkSession): Unit ={
+
+    //155852
+    val pathAndroidImp = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/android_300000_1234567.csv"
+    val dataAndroidImp = spark.read.text(pathAndroidImp).toDF("user_log_acct")
+    //155899
+    val pathIosImp = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/ios_200000_0123456.csv"
+    val dataIosImp = spark.read.text(pathIosImp).toDF("user_log_acct").except(dataAndroidImp)
+
+
+    //173553
+    val pathAndroidOther = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/android_other_300000_3456789.csv"
+    val dataAndroidOther = spark.read.text(pathAndroidOther).toDF("user_log_acct")
+    //50381
+    val pathIosOther = "hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/ios_other_200000_2345678.csv"
+    val dataIosOther = spark.read.text(pathIosOther).toDF("user_log_acct").except(dataAndroidOther)
+
+
+    //sample
+    val dataIosImpSampled = getRandomExpensive(dataIosImp,50381)
+
+    val dataAndroidOtherSampled = getRandomExpensive(dataAndroidOther,155852)
+
+    dataIosImpSampled.count()
+    dataAndroidImp.count()
+
+    dataIosOther.count()
+    dataAndroidOtherSampled.count()
+
+
+    dataIosImpSampled.write.mode("overwrite").parquet("hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/imp_ios")
+    dataAndroidImp.write.mode("overwrite").parquet("hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/imp_android")
+
+    dataIosOther.write.mode("overwrite").parquet("hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/other_ios")
+    dataAndroidOtherSampled.write.mode("overwrite").parquet("hdfs://ns1018/user/jd_ad/ads_polaris/zhangwenxiang6/tmp/other_android")
 
   }
   def tt(spark:SparkSession): Unit ={
